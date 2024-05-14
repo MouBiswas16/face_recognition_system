@@ -25,19 +25,38 @@ class _ImagePickerState extends State<ImagePickerClass> {
     }
   }
 
-  captureImages(){}
+  captureImages() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+      if(image != null){
+        setState(() {
+          _image = File(image.path);
+        });
+      }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Face Recognition Attendance System"),),
+      appBar: AppBar(
+        backgroundColor: Colors.cyan,
+        centerTitle: true,
+        title: Text(
+            "Face Recognition Attendance System"),
+        titleTextStyle: TextStyle(
+            fontSize: 19,
+        ),
+      ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _image != null? SizedBox(
               width: 200,
-                height: 200,
-                child: Image.file(_image!)) : Icon(Icons.image, size: 150,),
+                height: 300,
+                child: Image.file(_image!)) : Icon(
+              Icons.image, size: 150,
+            ),
+            SizedBox(height: 18),
             ElevatedButton(
               onPressed: (){
                 chooseImages();
