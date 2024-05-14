@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ImagePickerClass extends StatefulWidget {
   const ImagePickerClass({super.key});
@@ -12,10 +13,17 @@ class ImagePickerClass extends StatefulWidget {
 }
 
 class _ImagePickerState extends State<ImagePickerClass> {
-
+  final ImagePicker _picker = ImagePicker();
   File? _image;
 
-  chooseImages(){}
+  chooseImages() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if(image != null){
+      setState(() {
+        _image = File(image.path);
+      });
+    }
+  }
 
   captureImages(){}
 
@@ -26,7 +34,10 @@ class _ImagePickerState extends State<ImagePickerClass> {
       body: Center(
         child: Column(
           children: [
-            _image != null? Image.file(_image!) : Icon(Icons.image, size: 150,),
+            _image != null? SizedBox(
+              width: 200,
+                height: 200,
+                child: Image.file(_image!)) : Icon(Icons.image, size: 150,),
             ElevatedButton(
               onPressed: (){
                 chooseImages();
