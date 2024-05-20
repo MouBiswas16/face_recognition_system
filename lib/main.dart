@@ -1,4 +1,4 @@
-import 'package:face_recognition_system/image_picker.dart';
+import 'package:face_recognition_system/screens/image_picker.dart';
 import 'package:flutter/material.dart';
 
 void main() {
