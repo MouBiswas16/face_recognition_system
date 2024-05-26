@@ -1,4 +1,4 @@
-import 'package:face_recognition_system/screens/image_picker.dart';
+import 'package:face_recognition_system/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const ImagePickerClass(),
+      home: const RegistrationScreen(),
     );
   }
 }
