@@ -1,7 +1,10 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_typing_uninitialized_variables
 
+import 'dart:ffi';
 import 'dart:io';
 
+import 'package:face_recognition_system/strings/colors.dart';
+import 'package:face_recognition_system/widgets_&_classes/face_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,32 +17,33 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-
   // TODO declare variables
-  late ImagePicker imagePicker;
+  ImagePicker? imagePicker;
   File? _image;
 
   // TODO declare detector
-  late FaceDetector faceDetector;
+  FaceDetector? faceDetector;
 
   // TODO declare face recognition
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     imagePicker = ImagePicker();
 
     // TODO initialize face detector
-    final options = FaceDetectorOptions(performanceMode: FaceDetectorMode.accurate);
+    final options =
+        FaceDetectorOptions(performanceMode: FaceDetectorMode.accurate);
     faceDetector = FaceDetector(options: options);
 
     // TODO initialize face recognition
   }
 
   // TODO capture image form Camera
-  _imageFromCamera() async{
-    XFile? pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
-    if(pickedFile != null){
+  _imageFromCamera() async {
+    XFile? pickedFile =
+        await imagePicker!.pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
         doFaceDetection();
@@ -49,28 +53,49 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   // TODO choose image using Gallery
   _imageFromGallery() async {
-    XFile? pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
-    if(pickedFile != null){
-      _image = File(pickedFile.path);
+    XFile? pickedFile =
+        await imagePicker!.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
       doFaceDetection();
     }
   }
 
   // TODO face detection code here
+  List<Face> faces = [];
   doFaceDetection() async {
-
     // TODO remove rotation of camera images
     InputImage inputImage = InputImage.fromFile(_image!);
 
     // TODO passing input to face detector and getting detected faces
-    final List<Face> faces = await faceDetector.processImage(inputImage);
+    faces = await faceDetector!.processImage(inputImage);
 
     for (Face face in faces) {
       final Rect boundingBox = face.boundingBox;
       print("Rect = " + boundingBox.toString());
     }
-
+    drawRectangleAroundFaces();
     // TODO call the method to perform face recognition on detected faces
+  }
+
+  //TODO remove rotation of camera images
+
+  // TODO perform Face Recognition
+
+  // TODO Face Registration Dialogue
+
+  // TODO draw rectangle
+  var image;
+  drawRectangleAroundFaces()async{
+    image = await _image?.readAsBytes();
+    image = await decodeImageFromList(image);
+    print("${image.width}    ${image.height}");
+    setState(() {
+      image;
+      faces;
+    });
   }
 
   @override
@@ -81,19 +106,102 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Face Recognition"),
+        title: Text(
+          "Face Recognition",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: Colors.blueGrey,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _image != null ? Container(
-            margin: EdgeInsets.only(top: 100),
-            width: screenWidth - 50,
-            height: screenHeight - 50,
-            child: Image.file(_image!),
-          ) : Container(),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            image != null
+                ?
+                // Container(
+                //         margin: EdgeInsets.only(top: 100),
+                //         width: screenWidth - 38,
+                //         height: screenHeight - 38,
+                //         child: Image.file(_image!),
+                //       )
+                Container(
+                    margin: EdgeInsets.only(
+                        top: 68, left: 30, right: 30, bottom: 0),
+                    child: FittedBox(
+                      child: SizedBox(
+                        width: (image.width as int).toDouble(),
+                        height: (image.height as int).toDouble(),
+                        child: CustomPaint(
+                          painter: FacePainter(
+                            facesList: faces,
+                            imageFile: image,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : Icon(
+                    Icons.image_outlined,
+                    size: 200,
+                    color: Color(0xffBBBBBB),
+                  ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.2),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: Card(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(50),
+                      ),
+                    ),
+                    elevation: 10,
+                    child: IconButton(
+                      onPressed: () {
+                        _imageFromGallery();
+                      },
+                      icon: Icon(
+                        size: 56,
+                        Icons.image,
+                        color: btnColor,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: Card(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(50),
+                      ),
+                    ),
+                    elevation: 10,
+                    child: IconButton(
+                      onPressed: () {
+                        _imageFromCamera();
+                      },
+                      icon: Icon(
+                        size: 56,
+                        Icons.camera,
+                        color: btnColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
