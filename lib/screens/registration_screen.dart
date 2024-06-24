@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors, prefer_typing_uninitialized_variables
 
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:face_recognition_system/strings/colors.dart';
@@ -8,6 +7,7 @@ import 'package:face_recognition_system/widgets_&_classes/face_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image/image.dart' as img;
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -72,9 +72,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     // TODO passing input to face detector and getting detected faces
     faces = await faceDetector!.processImage(inputImage);
 
+    image = await _image?.readAsBytes();
+    image = await decodeImageFromList(image);
+
     for (Face face in faces) {
       final Rect boundingBox = face.boundingBox;
       print("Rect = " + boundingBox.toString());
+
+      num left = boundingBox.left < 0 ? 0 : boundingBox.left;
+      num right = boundingBox.right > image.width ? image.width - 1 : boundingBox.right;
+      num top = boundingBox.top < 0 ? 0 : boundingBox.top;
+      num bottom = boundingBox.bottom > image.height ? image.height - 1 : boundingBox.bottom;
+      num width = right - left;
+      num height = top - bottom;
+
+      final bytes = _image!.readAsBytesSync();
+      img.Image? faceImg = img.decodeImage(bytes);
+      img.Image croppedFace =
+          img.copyCrop(faceImg!, x: left.toInt(), y: top.toInt(), width: width.toInt(), height: height.toInt());
     }
     drawRectangleAroundFaces();
     // TODO call the method to perform face recognition on detected faces
@@ -88,9 +103,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   // TODO draw rectangle
   var image;
-  drawRectangleAroundFaces()async{
-    image = await _image?.readAsBytes();
-    image = await decodeImageFromList(image);
+  drawRectangleAroundFaces() async {
     print("${image.width}    ${image.height}");
     setState(() {
       image;
@@ -120,14 +133,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             image != null
-                ?
-                // Container(
-                //         margin: EdgeInsets.only(top: 100),
-                //         width: screenWidth - 38,
-                //         height: screenHeight - 38,
-                //         child: Image.file(_image!),
-                //       )
-                Container(
+                ? Container(
                     margin: EdgeInsets.only(
                         top: 68, left: 30, right: 30, bottom: 0),
                     child: FittedBox(
