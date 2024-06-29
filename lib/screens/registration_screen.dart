@@ -2,6 +2,8 @@
 
 import 'dart:io';
 
+import 'package:face_recognition_system/ML/recognition.dart';
+import 'package:face_recognition_system/ML/recognizer.dart';
 import 'package:face_recognition_system/strings/colors.dart';
 import 'package:face_recognition_system/widgets_&_classes/face_painter.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +26,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   // TODO declare detector
   FaceDetector? faceDetector;
 
-  // TODO declare face recognition
+  // TODO declare face recognizer
+  Recognizer? recognizer;
 
   @override
   void initState() {
@@ -36,7 +39,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         FaceDetectorOptions(performanceMode: FaceDetectorMode.accurate);
     faceDetector = FaceDetector(options: options);
 
-    // TODO initialize face recognition
+    // TODO initialize face recognizer
+    recognizer = Recognizer();
   }
 
   // TODO capture image form Camera
@@ -80,16 +84,25 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       print("Rect = " + boundingBox.toString());
 
       num left = boundingBox.left < 0 ? 0 : boundingBox.left;
-      num right = boundingBox.right > image.width ? image.width - 1 : boundingBox.right;
+      num right =
+          boundingBox.right > image.width ? image.width - 1 : boundingBox.right;
       num top = boundingBox.top < 0 ? 0 : boundingBox.top;
-      num bottom = boundingBox.bottom > image.height ? image.height - 1 : boundingBox.bottom;
+      num bottom = boundingBox.bottom > image.height
+          ? image.height - 1
+          : boundingBox.bottom;
       num width = right - left;
       num height = top - bottom;
 
       final bytes = _image!.readAsBytesSync();
       img.Image? faceImg = img.decodeImage(bytes);
-      img.Image croppedFace =
-          img.copyCrop(faceImg!, x: left.toInt(), y: top.toInt(), width: width.toInt(), height: height.toInt());
+      img.Image croppedFace = img.copyCrop(
+        faceImg!,
+        x: left.toInt(),
+        y: top.toInt(),
+        width: width.toInt(),
+        height: height.toInt(),
+      );
+      Recognition recognition = recognizer!.recognize(croppedFace, boundingBox);
     }
     drawRectangleAroundFaces();
     // TODO call the method to perform face recognition on detected faces

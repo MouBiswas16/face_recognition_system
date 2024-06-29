@@ -34,5 +34,6 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/tflite_models
+    - assets/tflite_models/facenet.tflite
+    - assets/tflite_models/mobile_face_net.tflite
 

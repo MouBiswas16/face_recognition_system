@@ -15,7 +15,7 @@ class FacePainter extends CustomPainter {
     Paint p = Paint();
     p.color = Colors.red;
     p.style = PaintingStyle.stroke;
-    p.strokeWidth = 5;
+    p.strokeWidth = 15;
 
     for (Face face in facesList) {
       canvas.drawRect(face.boundingBox, p);
