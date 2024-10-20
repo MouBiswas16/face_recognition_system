@@ -1,32 +1,37 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:face_recognition_system/screens/live_face_detection.dart';
 import 'package:face_recognition_system/screens/recognition_screen.dart';
 import 'package:face_recognition_system/screens/registration_screen.dart';
 import 'package:face_recognition_system/strings/colors.dart';
 import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+  @override
+  State<HomeScreen> createState() => _HomePageState();
+}
 
+class _HomePageState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 70,
-        ),
-        child: Center(
-          child: Column(
-            children: [
-                SizedBox(height: 30),
-              Image.asset(
-                width: MediaQuery.of(context).size.width * 0.85,
-                "assets/images/logo.jpg",
-              ),
-              Spacer(),
-              Column(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+                margin: EdgeInsets.only(top: 100),
+                child: Image.asset(
+                  "assets/images/logo.jpg",
+                  width: screenWidth - 40,
+                  height: screenWidth - 40,
+                )),
+            Container(
+              margin: EdgeInsets.only(bottom: 50),
+              child: Column(
                 children: [
                   ElevatedButton(
                     onPressed: () {
@@ -38,47 +43,39 @@ class HomeScreen extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: btnColor,
-                      foregroundColor: btnTextColor,
-                      fixedSize:
-                          Size(MediaQuery.of(context).size.width * 0.85, 40),
-                      elevation: 10,
-                      shape: BeveledRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(3))),
-                    ),
+                        backgroundColor: btnColor,
+                        minimumSize: Size(screenWidth - 30, 50)),
                     child: Text(
                       "Register",
-                      // style: GoogleFonts.aboreto(fontSize: 18),
+                      style: TextStyle(color: btnTextColor),
                     ),
                   ),
-                  SizedBox(height: 18),
+                  SizedBox(
+                    height: 20,
+                  ),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RecognitionScreen(),
+                          builder: (context) => LiveFaceDetection(),
                         ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: btnColor,
-                      foregroundColor: btnTextColor,
-                      fixedSize:
-                          Size(MediaQuery.of(context).size.width * 0.85, 40),
-                      elevation: 10,
-                      shape: BeveledRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(3))),
-                    ),
+                        backgroundColor: btnColor,
+                        minimumSize: Size(screenWidth - 30, 50)),
                     child: Text(
-                      "Recognition",
-                      // style: GoogleFonts.aboreto(fontSize: 18),
+                      "Recognize",
+                      style: TextStyle(
+                        color: btnTextColor,
+                      ),
                     ),
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

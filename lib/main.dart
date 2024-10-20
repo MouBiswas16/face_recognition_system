@@ -1,25 +1,16 @@
-import 'package:face_recognition_system/screens/home_screen.dart';
+import 'package:camera/camera.dart';
+import 'package:face_recognition_system/screens/live_face_detection.dart';
+import 'package:face_recognition_system/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Face Recognition',
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
+  runApp(
+    const MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const HomeScreen(),
-    );
-  }
+      // home: HomeScreen(),
+      home: SplashScreen(),
+    ),
+  );
 }

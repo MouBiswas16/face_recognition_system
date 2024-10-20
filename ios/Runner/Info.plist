@@ -5,7 +5,9 @@
     <key>NSPhotoLibraryUsageDescription</key>
     <string></string>
     <key>NSCameraUsageDescription</key>
-    <string></string>
+    <string>your usage description here</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>your usage description here</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
